@@ -1,0 +1,160 @@
+import csv
+from time import gmtime ,strftime
+timebank = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+
+with open('book1.csv') as data:
+    reader = csv.reader(data)
+    customers = [i for i in reader]
+    name_customers = [list(x) for x in zip(*customers)]
+list_stk = name_customers[1]
+print(list_stk)
+
+def options(in4):
+    print("""
+      Vui lòng chọn chức năng mong muốn :
+           1.Kiểm Tra Số Dư 
+           2.Rút Tiền
+           3.Chuyển tiền
+           4.Đổi Mật Khẩu
+           5.Thoát
+            """)
+    choice = (input("Nhập Yêu Cầu :"))
+    if choice == '1':
+        show_money(in4)
+    elif choice == '2':
+        withdrawal(in4)
+    elif choice == '3':
+        transfer(in4)
+    elif choice == '4' :
+        change_pass(in4)
+    elif choice == '5' :
+        print("Cảm ơn đã sử dụng dịch vụ tại NTQ Banking")
+        exit()
+    else:
+        options(in4)
+    return choice
+
+def check_stk():
+    print("NTQ SOLUTIONS BANKING")
+    print("**********************")
+    stk = input("Vui lòng nhập stk của bạn  : ")
+    if stk in list_stk:
+        for in4 in customers:
+            for j in in4:
+                if stk in j:
+                    print("Xin Chao " + in4[0])
+                    check_pass(in4)
+    elif stk not in list_stk:
+        back1 = (input(""" Số tài khoản không đúng . Xin vui lòng lựa chọn  
+                             -------------------------------------------------
+                              1 . Nhập lại số tài khoản  2. Thoát """))
+        if back1 == '1':
+            check_stk()
+        elif back1 == '2':
+            exit()
+            print("Cảm ơn đã sử dụng dịch vụ tại NTQ Banking")
+        else:
+            exit()
+            print("Cảm ơn đã sử dụng dịch vụ tại NTQ Banking")
+    return in4
+def check_pass(in4):
+    password = input("Vui lòng nhập mã pin : ")
+    if password ==  in4[2]:
+        options(in4)
+    else:
+        count = 0
+        while password != in4[2] and count <3 :
+            password2 = input("Vui lòng nhập lại mật khẩu :")
+            count += 1
+            if count == 3:
+                print("""Ngân hàng tạm thời giữ thẻ do bạn nhập sai mật khẩu 3 lần.
+                         Vui lòng liên hệ nhân viên ngân hàng để được hỗ trợ.""")
+                break
+            if password2 ==  in4[2]:
+                options(in4)
+    return in4
+def show_money(in4):
+    form = """NTQ SOLUTIONS 
+              NGÀY : {}
+              SỐ DƯ CỦA BẠN : {} VNĐ                                                  
+              """
+
+    print(form.format(timebank, in4[-1]))
+    choicee = int(input("1. Giao dịch tiếp 2.Thoát"))
+    if choicee == 1:
+        options(in4)
+    elif choicee == 2:
+        exit()
+        print("Cảm ơn đã sử dụng dịch vụ tại NTQ Banking")
+
+def withdrawal(in4):
+    print('SỐ DƯ CỦA BẠN : ' , in4[-1] )
+    take_money = int(input("NHẬP SỐ TIỀN :  "))
+    if take_money > int(in4[-1]) and int(in4[-1]) > 0 :
+        print("Tài khoản không đủ để thực hiện giao dịch")
+        withdrawal(in4)
+    elif take_money <= int(in4[-1]) and int(in4[-1]) :
+        (in4[-1]) = str(int(in4[-1]) - int(take_money))
+        print("Giao dịch thành công")
+        print("Số dư hiện tại của bạn là : " ,str(int(in4[-1])))
+        choices(in4)
+def transfer(in4):
+    recipient = (input("Đến tài khoản : "))
+    for receive in customers:
+        for j in receive:
+            if recipient in j and recipient != in4[1] :
+                print("Tên người nhận " + receive[0])                    # receive[-1]: tiền người được nhận
+                moneyA = int(input("Số tiền cần chuyển : "))             # in4[-1] : tiền người chuyển
+                if moneyA > int(in4[-1]) and moneyA > 0 :
+                    print("Số dư không khả dụng")
+                    choices(in4)
+                elif moneyA <= int(in4[-1]) and moneyA > 0:
+                    in4[-1] = str(int(in4[-1]) - moneyA)
+                    receive[-1] = str(int(receive[-1]) + moneyA)
+                    print("Giao dịch thành công ")
+                    print('SỐ DƯ CỦA BẠN : ' , in4[-1] )
+                    choice2 = int(input("1.Giao dịch tiếp 2.Thoát "))
+                    if choice2 == 1:
+                        transfer(in4)
+                    elif choice2 == 2:
+                        options(in4)
+            elif recipient not in list_stk or recipient == in4[1]:
+                print("Số tài khoản không hợp lệ")
+                choice3 = (input("1.Nhập lại số tài khoản 2.Thoát "))
+                if choice3 == '1' :
+                    transfer(in4)
+                elif choice3 == '2' :
+                    options(in4)
+
+def change_pass(in4):
+    change = input("Vui lòng nhập mã pin : ")
+    if change in in4:
+        new_pass = input("Nhập mã pin mới (6 chữ số) : ")
+        new_pass2 = input("Nhập lại mã pin : ")
+        if new_pass == new_pass2 :
+            in4[2] = new_pass
+            print("Cập nhật mật khẩu thành công ")
+            check_stk()
+        elif new_pass == new_pass2 is False:
+            print("Nhập lại mã pin chưa đúng")
+            again = (input("Bạn có muốn tiếp túc tác vụ ? 1.Có 2.Không"))
+            if again == '1' :
+                change_pass(in4)
+            elif again == '2' :
+                options(in4)
+    elif change not in in4:
+        print("Mã pin không hợp lệ")
+        change_pass(in4)
+def choices(in4):
+    choice = (input("1. Giao dịch tiếp 2.Thoát"))
+    if choice == '1':
+        options(in4)
+    elif choice == '2':
+        exit()
+        print("Cảm ơn đã sử dụng dịch vụ tại NTQ Banking")
+    else:
+        choices(in4)
+def main():
+    in4 = check_stk()
+main()
+
