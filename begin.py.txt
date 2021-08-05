@@ -1,4 +1,4 @@
-import csv
+﻿import csv
 from time import gmtime ,strftime
 timebank = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
@@ -9,10 +9,7 @@ with open('book1.csv') as data:
 list_stk = name_customers[1]
 print(list_stk)
 
-def options(in4):
-    print("""
-      Vui lòng chọn chức năng mong muốn :
-           1.Kiểm Tra Số Dư 
+def ffdsfdsfdsf
            2.Rút Tiền
            3.Chuyển tiền
            4.Đổi Mật Khẩu
